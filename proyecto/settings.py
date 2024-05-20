@@ -9,6 +9,47 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+"""
+      AL INICIAR UN NUEVO PROYECTO ES IMPORTANTE CAMBIAR ESTOS DATOS
+TEMPLATES = [
+    {
+        'DIRS': [BASE_DIR / 'templates'],
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'db_djcmpfc_32',
+        'USER': 'postgres',
+        'PASSWORD': '123456',
+        'HOST': '127.0.0.1',
+        'PORT': '5435',
+    }
+}
+
+# Internationalization
+# https://docs.djangoproject.com/en/4.2/topics/i18n/
+
+LANGUAGE_CODE = 'es'
+
+TIME_ZONE = 'UTC'
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.2/howto/static-files/
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    '/var/www/static/'
+]
+
+MEDIA_ROOT =  (BASE_DIR / 'media')
+MEDIA_URL = '/media/'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
+        
+"""
+
 
 from pathlib import Path
 
@@ -53,8 +94,10 @@ ROOT_URLCONF = 'proyecto.urls'
 
 TEMPLATES = [
     {
+        # AL INICIAR UN NUEVO PROYECTO ES IMPORTANTE CAMBIAR ESTOS DATOS
+
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,8 +118,12 @@ WSGI_APPLICATION = 'proyecto.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'db_djcmpfc_32',
+        'USER': 'postgres',
+        'PASSWORD': '123456',
+        'HOST': '127.0.0.1',
+        'PORT': '5435',
     }
 }
 
@@ -103,7 +150,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
@@ -116,6 +163,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    '/var/www/static/'
+]
+
+MEDIA_ROOT =  (BASE_DIR / 'media')
+MEDIA_URL = '/media/'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
