@@ -14,6 +14,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="{% static 'plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css' %}">
+  <!-- Toastr -->
+  <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
 </head>
@@ -154,6 +158,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <i class="fas fa-th-large"></i>
         </a>
       </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link" id="btnLogout">
+          <i class="fas fa-sign-out-alt"></i>
+        </a>
+      </li>      
     </ul>
   </nav>
   <!-- /.navbar -->
@@ -196,37 +205,71 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-item menu-open">
-            <a href="#" class="nav-link active">
+          <li class="nav-item">
+            <a href="#" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
-                Starter Pages
+                Catálogos
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link active">
+                {% if perms.inv.view_categorias%}
+                <a href="{% url 'config:categorias'%}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Active Page</p>
+                  <p>Categoría</p>
+                </a>
+                {% endif %}
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'config:subcategorias'%}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Sub Categoría</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Inactive Page</p>
+                  <p>Marca</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Unidad de Medidas</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Productos</p>
                 </a>
               </li>
             </ul>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
-                Simple Link
-                <span class="right badge badge-danger">New</span>
+                Movimientos
+                <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'config:compras'%}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Compras</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Facturas</p>
+                </a>
+              </li>
+            </ul>
           </li>
         </ul>
       </nav>
@@ -358,7 +401,48 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
 <!-- Bootstrap 4 -->
 <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- SweetAlert2 -->
+<script src="{% static 'plugins/sweetalert2/sweetalert2.min.js' %}"></script>
+<!-- Toastr -->
+<script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+
+<script>
+  $("#btnLogout").click(function(e){
+    Swal.fire({
+      title: "¿Cerrar Sesión de {{user}}?",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Si, cerrar',
+      cancelButtonText: 'No cerrar',
+    }).then((result)=>{
+      console.log(result)
+      if (result.isConfirmed){
+        location.replace('{% url 'config:logout' %}')
+      }
+    })
+  })
+
+  $(document).ready(function(){
+    var $enlaces = $(".nav>.nav-item>.nav-link");
+
+    $($enlaces).each(function(){
+       var request_path = '{{request.path}}'
+       console.log(request_path)
+       var link= $(this).attr('href')
+
+       if(request_path.includes(link) && link!="/"){
+         var grp_padre = $(this).parent().parent().parent().first()
+         var contenedor = grp_padre.children("a")
+         $(this).addClass("active")
+         grp_padre.addClass("menu-open")
+         contenedor.addClass("active")
+       }
+    })
+
+  })
+</script>  
+
 </body>
 </html>
