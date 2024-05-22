@@ -17,7 +17,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- SweetAlert2 -->
   <link rel="stylesheet" href="{% static 'plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css' %}">
   <!-- Toastr -->
-  <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">  
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">  
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
 </head>
@@ -153,11 +157,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <i class="fas fa-expand-arrows-alt"></i>
         </a>
       </li>
+      {% if user.is_staff %}
       <li class="nav-item">
         <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-          <i class="fas fa-th-large"></i>
+          <i class="fas fa-users-cog"></i>
         </a>
       </li>
+      {% endif %}
       <li class="nav-item">
         <a href="#" class="nav-link" id="btnLogout">
           <i class="fas fa-sign-out-alt"></i>
@@ -370,15 +376,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- /.content-wrapper -->
 
   <!-- Control Sidebar -->
-  {% block control_sidebar %}  
+  {% block control_sidebar %}
   <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->
     <div class="p-3">
-      <h5>Title</h5>
-      <p>Sidebar content</p>
+      <h5>Administración de Usuarios</h5>
+      <p> <a href="{% url 'config:users_list'%}" rel="noopener noreferrer"><i class="fas fa-user-lock"></i> Usuarios</a> </p>
+      <p> <a href="#" rel="noopener noreferrer"><i class="fas fa-users"></i> Grupos</a> </p>
     </div>
   </aside>
-  {% endblock control_sidebar %}  
+  {% endblock control_sidebar %}
   <!-- /.control-sidebar -->
 
   <!-- Main Footer -->
@@ -405,6 +412,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{% static 'plugins/sweetalert2/sweetalert2.min.js' %}"></script>
 <!-- Toastr -->
 <script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+
 <!-- AdminLTE App -->
 <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
 
@@ -440,6 +461,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
          contenedor.addClass("active")
        }
     })
+
+    $("#tbl").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#tbl_wrapper .col-md-6:eq(0)');
 
   })
 </script>  
