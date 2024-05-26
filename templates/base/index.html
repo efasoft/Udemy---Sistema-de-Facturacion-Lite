@@ -382,7 +382,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <div class="p-3">
       <h5>Administración de Usuarios</h5>
       <p> <a href="{% url 'config:users_list'%}" rel="noopener noreferrer"><i class="fas fa-user-lock"></i> Usuarios</a> </p>
-      <p> <a href="#" rel="noopener noreferrer"><i class="fas fa-users"></i> Grupos</a> </p>
+      <p> <a href="{% url 'config:user_groups_list'%}" rel="noopener noreferrer"><i class="fas fa-users"></i> Grupos</a> </p>
     </div>
   </aside>
   {% endblock control_sidebar %}
@@ -430,6 +430,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
 
 <script>
+
   $("#btnLogout").click(function(e){
     Swal.fire({
       title: "¿Cerrar Sesión de {{user}}?",
@@ -463,12 +464,93 @@ scratch. This page gets rid of all links and provides the needed markup only.
     })
 
     $("#tbl").DataTable({
+      "pageLength": 5,        
+      "language": {
+      "sProcessing": "Procesando...",
+      "sLengthMenu": "Mostrar _MENU_ registros",
+      "sZeroRecords": "No se encontraron resultados",
+      "sEmptyTable": "Ningún dato disponible en esta tabla",
+      "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+      "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+      "sInfoPostFix": "",
+      "sSearch": "Buscar:",
+      "sUrl": "",
+      "sInfoThousands": ",",
+      "sLoadingRecords": "Cargando...",
+      "oPaginate": {
+          "sFirst": "<span class='fa fa-angle-double-left'></span>",
+          "sLast": "<span class='fa fa-angle-double-right'></span>",
+          "sNext": "<span class='fa fa-angle-right'></span>",
+          "sPrevious": "<span class='fa fa-angle-left'></span>"
+      },
+      "oAria": {
+          "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+          "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+      }
+    },
+
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#tbl_wrapper .col-md-6:eq(0)');
-
   })
+
+  document.addEventListener('DOMContentLoaded', function () {
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl)
+      })
+  }, false);
+
+  function abrir_borrar(desc,url){
+    Swal.fire({
+      title: "¿Borrar?",
+      text : `Se borrará ${desc}`,
+      icon:"question",
+      showCancelButton: true,
+      confirmButtonText: `Si, Borrar`,
+      cancelButtonText: `No borrar`,
+      allowOutsideClick:false,
+      confirmButtonClass: 'btn btn-danger',
+    }).then((borrar) => {
+      console.log(borrar)
+      if(borrar.isConfirmed){
+        var token = "{{csrf_token}}"
+        $.ajax({
+          headers : {"X-CSRFToken": token},
+          type: "POST",
+          url:url,
+          success: function(r){
+            if(r==="OK"){
+              location.reload(true)
+            }else{
+              Swal.fire("Error Inesperado tratando de borrar registro "+ r)
+            }
+          },
+          error: function(jqXHR, textStatus, errorThrow){
+            Swal.fire(errorThrow,"","red")
+          }
+        })
+      }else{
+        Swal.fire("Registro No fue borrado... ACCION CANCELADA","","info")
+      }
+    })
+  }
+
+  function mensaje(msg,tipo="info"){
+    var tst = `toastr.${tipo}('${msg}')`
+    eval(tst)
+  }
+
+  {% if messages %}
+    {% for m in messages%}
+    mensaje("{{m}}","{{ m.tags }}")
+    {% endfor %}
+  {% endif %}
+    
 </script>  
 
+{% block js %}
+{% endblock js%}
 </body>
 </html>
